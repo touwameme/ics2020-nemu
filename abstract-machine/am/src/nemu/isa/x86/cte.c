@@ -13,20 +13,28 @@ void __am_vecsys();
 void __am_vectrap();
 void __am_vecnull();
 
+ void __am_get_cur_as(Context *c);
+ bool __am_switch(Context *c);
 
 Context* __am_irq_handle(Context *c) {
+
+  __am_get_cur_as(c);
+  //printf("cur as is %p\n",c);
+
   if (user_handler) {
     Event ev = {0};
     switch (c->irq) {
+      case 0x20: ev.event = EVENT_IRQ_TIMER;break;
       case 0x80 : ev.event = EVENT_SYSCALL; break;
       case 0x81 : ev.event = EVENT_YIELD; break;
-      default: ev.event = EVENT_ERROR; break;
+      default: printf("unkown irq %x\n",c->irq);ev.event = EVENT_ERROR; break;
     }
 
     c = user_handler(ev, c);
+    //printf("after handle_irq  context %p\n",c);
     assert(c != NULL);
   }
-
+  __am_switch(c);
   return c;
 }
 
@@ -48,16 +56,25 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
 
   // register event handler
   user_handler = handler;
-
   return true;
 }
 
 
 Context* kcontext(Area kstack, void (*entry)(void *), void *arg) {
-  return NULL;
+  Context* kcontext = kstack.end -sizeof(Context)- 2*sizeof(uintptr_t);
+  //printf("kcontext arg at %p\n",kcontext-sizeof(uintptr_t));
+  //printf("kstack start: %p, end: %p\n",kstack.start,kstack.end);
+  *(uintptr_t*)(kstack.end-sizeof(uintptr_t)) = (uintptr_t)arg;
+    kcontext->cr3 = NULL;
+    kcontext->eip = (uintptr_t) entry;
+    kcontext->cs = 0x8; 
+    kcontext->eflags |= 0x200;   //set IF 1
+    
+  
+  return kcontext;
 }
-
 void yield() {
+ // printf("am_yield\n");
   asm volatile("int $0x81");
 }
 

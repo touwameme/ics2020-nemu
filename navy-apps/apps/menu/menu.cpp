@@ -106,14 +106,14 @@ int main(int argc, char *argv[], char *envp[]) {
       auto *item = &items[i];
       const char *exec_argv[3];
       exec_argv[0] = item->bin;
-      printf("arg0 %s\n",exec_argv[0]);
+      //printf("arg0 %s\n",exec_argv[0]);
       exec_argv[1] = item->arg1;
       exec_argv[2] = NULL;
       clear_display();
       SDL_UpdateRect(screen, 0, 0, 0, 0);
-      printf("here1\n");
+      //printf("here1\n");
       execve(exec_argv[0], (char**)exec_argv, (char**)envp);
-      printf("here2\n");
+      //printf("here2\n");
       fprintf(stderr, "\033[31m[ERROR]\033[0m Exec %s failed.\n\n", exec_argv[0]);
     } else {
       fprintf(stderr, "Choose a number between %d and %d\n\n", 0, i_max);

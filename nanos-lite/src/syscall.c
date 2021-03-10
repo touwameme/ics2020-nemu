@@ -19,38 +19,53 @@ static inline uint32_t inl(int port) {
 # define VGACTL_ADDR  0x100
 # define AUDIO_ADDR   0x200
 
+
+void sys_exit(uintptr_t x);
+
 int sys_yield(){
+  //printf("sys_yield\n");
   yield();  
   return 0;
 }
 int naive_uload(PCB *pcb, const char *filename);
 void switch_boot_pcb();
-
+void context_uload(PCB*pcb,const char *filename,char *const argv[],char *const envp[]);
 
 static int sys_execve(const char *filename, char *const argv[],char *const envp[]){
-//printf("sys_execve %s\n",filename);
-int n = naive_uload(NULL,filename);
-//switch_boot_pcb();
 
-return n;
+
+      
+char* empty[] = {NULL};
+context_uload(current,filename, argv,empty);
+//printf("here\n");
+if(current->cp->eip != -1){
+switch_boot_pcb();
+//printf("here\n");
+yield();
+}
+
+return -1;
 }
 
 void sys_exit(uintptr_t x){
-
- // printf("sys_exit\n");
 //halt(0);
-// sys_execve("/bin/menu",0,0);
-sys_execve("/bin/nterm",0,0);
+char* empty[]={NULL};
+ // printf("sys_exit\n");
+sys_execve("/bin/nterm",empty,empty);
 }
 
 
 
 
-
+int mm_brk(uintptr_t brk);
 
 
 int sys_brk(intptr_t x){
-  //printf("brk\n");
+ // printf("brk\n");
+  #ifdef HAS_VME
+  return mm_brk(x);
+  #endif 
+
   return 0;
 }
 
@@ -86,7 +101,7 @@ size_t sys_gettimeofday(struct timeval* tv,struct  timezone * tz)
 
 
 
-void do_syscall(Context *c) {
+Context* do_syscall(Context *c) {
   uintptr_t a[4];
   a[0] = c->GPR1;
   a[1] = c->GPR2;
@@ -118,7 +133,8 @@ void do_syscall(Context *c) {
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 
-
+//printf("end syscall ret %p\n",c);
+return c;
 }
 /*
 enum {

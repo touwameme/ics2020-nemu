@@ -61,6 +61,13 @@ static inline def_EHelper(pusha) {
   print_asm("pusha");
 }
 
+
+static inline def_EHelper(pushf){
+  rtl_push(s,&cpu.eflags);
+  print_asm_template1(push);
+}
+
+
 static inline def_EHelper(popa) {
     cpu.edi = vaddr_read(reg_l(R_ESP),4);
     cpu.esp+=4;
@@ -171,7 +178,7 @@ static inline def_EHelper(lea) {
 
 static inline def_EHelper(LES) {
   rtl_addi(s, dsrc1, s->isa.mbase, s->isa.moff);
-  printf("addr is %x\n",*dsrc1);
+  //printf("addr is %x\n",*dsrc1);
   *s0 = vaddr_read(*dsrc1,id_dest->width);
   if(id_dest->width == 4){
     *ddest = *s0;

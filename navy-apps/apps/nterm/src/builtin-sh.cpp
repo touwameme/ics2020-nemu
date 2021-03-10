@@ -38,7 +38,7 @@ char* get_arg(char* p){
 }
 
 static void sh_handle_cmd(const char *cmd) {
-//printf("pa3-version\n");
+//printf("pa4-version\n");
 if(strcmp(cmd,"exit\n")== 0){
     exit(0);
   }
@@ -51,22 +51,28 @@ if(strcmp(cmd,"exit\n")== 0){
   char* file =buf;
   while(*file ==' '){file=(char*)(int(file) +1);}
   int i;
+  
+  char* empty[]={NULL};
   static char* argv[10] = {};
+  char** args = argv;
   for(i=0;i<10;i++){
     char* tem = get_arg(file);
     if(tem != NULL){argv[i] = tem;}
     else{argv[i]=NULL;break;}
   }  
 
-//  printf("file %s\n",file);
+  //printf("file %s\n",file);
   //printf("-----\n");
+  if(i>0){
   for (int t=0;t<i;t++){
   //printf("arg%d %s\n",t,argv[t]);
   }
+  }
+  else{args=empty;}
   //printf("-----\n");
 
 
-  execvp(file,argv);
+  execvpe(file,args,empty);
 }
 
 void builtin_sh_run() {

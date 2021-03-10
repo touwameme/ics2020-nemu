@@ -151,6 +151,25 @@ static inline def_DHelper(mov_E2G) {
   operand_rm(s, id_src1, true, id_dest, false);
 }
 
+
+
+static inline def_DHelper(mov_cr){
+  uint32_t v = instr_fetch(&s->seq_pc, 1);
+  //printf("rmr %x\n",v);
+  dsrc1 = &reg_l(v&0x7);
+
+  //printf("index %x\n",v&0x7);
+  switch ((v>>3)&0x7)
+  {
+  case 0: ddest = &cpu.cr0;break;
+      
+  case 3: ddest = &cpu.cr3;break;
+  default:assert(0);
+    break;
+  } 
+
+}
+
 static inline def_DHelper(lea_M2G) {
   operand_rm(s, id_src1, false, id_dest, false);
 }

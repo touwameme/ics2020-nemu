@@ -8,7 +8,7 @@
 
 #define MAX_CPU 16
 #define TRAP_PAGE_START (void *)0x100000
-#define PMEM_START (void *)0x3000000  // for nanos-lite with vme disabled
+#define PMEM_START (void *)0x1000000  // for nanos-lite with vme disabled
 #define PMEM_SIZE (128 * 1024 * 1024)
 static int pmem_fd = 0;
 static void *pmem = NULL;
@@ -137,6 +137,7 @@ static void init_platform() {
 
   // save the context template
   save_example_context();
+  uc_example.uc_mcontext.fpregs = NULL;
   __am_get_intr_sigmask(&uc_example.uc_sigmask);
 
   // disable interrupts by default

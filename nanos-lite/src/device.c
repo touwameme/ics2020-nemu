@@ -16,6 +16,10 @@ static const char *keyname[256] __attribute__((used)) = {
 };
 
 size_t serial_write(const void *buf, size_t offset, size_t len) {
+  #ifndef HAS_TIMER_IRQ
+  yield(); 
+  #endif
+  
   for(int i = 0;i< len ;i++){
     putch((((char*)(buf))[i]));
   }
@@ -29,8 +33,16 @@ static inline uint32_t inl(int port) {
   return data;
 }
 
+
+void change_fg(int i);
+
 size_t events_read(void *buf, size_t offset, size_t len) {
   
+  #ifndef HAS_TIMER_IRQ
+  yield(); 
+  #endif
+
+
   AM_INPUT_KEYBRD_T kbd;
   int k =inl(KBD_ADDR);
   kbd.keydown = (k & KEYDOWN_MASK ? true : false);
@@ -42,6 +54,10 @@ size_t events_read(void *buf, size_t offset, size_t len) {
     char kd[] = "kd"; 
     char *kstate = (char*)((kbd.keydown)?&kd : &ku);
     int res = sprintf(buf,"%s %s\n",kstate,keyname[kbd.keycode]);
+
+    if(kbd.keycode == AM_KEY_F1){change_fg(1);}
+    if(kbd.keycode == AM_KEY_F2){change_fg(2);}
+    if(kbd.keycode == AM_KEY_F3){change_fg(3);}
     //printf("event : %s\n",buf);
     return res;
   }
@@ -57,6 +73,7 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
   int res = snprintf(buf,len,"WIDTH : %d\nHEIGHT : %d\n",w,h);
   //printf("disp  buf %s\n",buf);
   //printf("disp read W:%d H:%d\n",w,h);
+
   return res;
 }
 
@@ -66,6 +83,9 @@ static inline void outl(int port, uint32_t data) {
 }
 
 size_t fb_write(const void *buf, size_t offset, size_t len) {
+  #ifndef HAS_TIMER_IRQ
+  yield(); 
+  #endif
   init_fs();
   int w = inl(VGACTL_ADDR)>>16;
   

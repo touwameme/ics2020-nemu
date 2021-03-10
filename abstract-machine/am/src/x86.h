@@ -278,6 +278,7 @@ static inline uintptr_t get_cr0(void) {
 }
 
 static inline void set_cr0(uintptr_t cr0) {
+  //printf("setcr0 %x\n",cr0);
   asm volatile ("mov %0, %%cr0" : : "r"(cr0));
 }
 
@@ -318,6 +319,7 @@ static inline uintptr_t get_cr3() {
 }
 
 static inline void set_cr3(void *pdir) {
+
   asm volatile ("mov %0, %%cr3" : : "r"(pdir));
 }
 

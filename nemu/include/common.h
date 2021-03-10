@@ -7,12 +7,13 @@
 
 #if _SHARE
 // do not enable these features while building a reference design
-#undef DIFF_TEST
+//#undef DIFF_TEST
 #undef DEBUG
 #endif
 
 /* You will define this macro in PA2 */
 #define HAS_IOE
+#define HAS_TIMER_IRQ
 
 #include <stdint.h>
 #include <assert.h>

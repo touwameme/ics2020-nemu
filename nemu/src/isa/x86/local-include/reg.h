@@ -20,8 +20,11 @@ static inline const char* reg_name(int index, int width) {
   extern const char* regsl[];
   extern const char* regsw[];
   extern const char* regsb[];
+  if(index >= 0 && index < 8){}
+  else{
+  printf("%x\n",index);
   assert(index >= 0 && index < 8);
-
+  }
   switch (width) {
     case 4: return regsl[index];
     case 1: return regsb[index];

@@ -1,4 +1,4 @@
-# Matefile for Navy Applications and Libraries
+# Makefile for Navy Applications and Libraries
 
 ### *Get a more readable version of this Makefile* by `make html` (requires python-markdown)
 html:
@@ -169,8 +169,8 @@ $(CLEAN_ALL):
 .PHONY: clean-all $(CLEAN_ALL)
 
 ### Build fsimg and ramdisk for Nanos-lite
-APPS = nterm menu pal bird nslider
-TESTS = dummy hello file-test  bmp-test event-test
+APPS = nterm menu pal bird nslider 
+TESTS = dummy hello 
 
 fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))
 	-for t in $^; do $(MAKE) -s -C $(NAVY_HOME)/$$t install; done

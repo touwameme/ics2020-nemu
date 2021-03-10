@@ -44,8 +44,11 @@ typedef struct {
 struct{
   rtlreg_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
   uint32_t eflags;
+   rtlreg_t cr3,cr0;
+   bool INTR;
   vaddr_t pc;
   uint32_t ip,cs, ss, ds, es, fs, gs;
+  rtlreg_t ksp;
   struct {
       uint16_t limit;
       uint32_t base; 
@@ -71,7 +74,7 @@ typedef struct {
 
 
 #define suffix_char(width) ((width) == 4 ? 'l' : ((width) == 1 ? 'b' : ((width) == 2 ? 'w' : '?')))
-#define isa_vaddr_check(vaddr, type, len) (MEM_RET_OK)
+//#define isa_vaddr_check(vaddr, type, len) (MEM_RET_OK)
 #define x86_has_mem_exception() (false)
 
 #endif

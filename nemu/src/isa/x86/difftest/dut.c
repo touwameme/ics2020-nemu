@@ -50,7 +50,13 @@ if(ref_r->ebp!= cpu.ebp){
   if(ref_r->esi != cpu.esi){
      printf("esi wrong:dut is %x  the ref_esi is %x\n",cpu.esi,ref_r->esi);
      return false;
-  }   
+  } 
+/*
+  if(ref_r->cr3 != cpu.cr3){
+     printf("cr3 wrong:dut is %x  the ref_cr3 is %x\n",cpu.cr3,ref_r->cr3);
+     return false;
+  }  
+  */  
  /*
   if( ref_r->cs != cpu.cs && ((ref_r->cs & 0xf)  == 0)){
      printf("cs wrong:dut is %x  the ref_cs is %x\n",cpu.cs,ref_r->cs);

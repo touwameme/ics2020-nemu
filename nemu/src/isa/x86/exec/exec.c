@@ -68,6 +68,8 @@ static inline def_EHelper(2byte_esc) {
   /* TODO: Add more instructions!!! */
     IDEX (0x01,gp7_idt ,gp7)
     IDEX (0x10,r,mmx)
+    IDEX (0x20,mov_cr,mov_cr2r)
+    IDEX (0x22,mov_cr,mov_r2cr) 
     IDEX (0x80, I, jcc)
     IDEX (0x81, I, jcc)
     IDEX (0x82, I, jcc)
@@ -248,6 +250,7 @@ again:
     IDEX (0x97,eax_op_r,xchg)
     EX    (0x98,cwtl)
     EX   (0x99,cltd)  
+    //EX   (0x9c,pushf)
     IDEXW(0xa0, O2a, mov, 1)
     IDEX (0xa1, O2a, mov)
     IDEXW(0xa2, a2O, mov, 1)
@@ -276,7 +279,7 @@ again:
     IDEXW(0xc0, Ib2E, gp2, 1)
     IDEX (0xc1, Ib2E, gp2)
     IDEX (0xc3, ret_r ,ret )
-    IDEX (0xc4,lea_E2G,LES)  //```
+    //IDEX (0xc4,lea_E2G,LES)  //```
     //IDEX (0xc5,r,LES)
     IDEXW(0xc6, mov_I2E, mov, 1)
     IDEX (0xc7, mov_I2E, mov)
@@ -302,6 +305,7 @@ again:
     IDEX (0xef,out_a2dx,out)
     EX   (0xf3, fetch3);
     IDEXW(0xf6, E, gp3, 1)
+    EX  (0xf4,fetch1)   //HLT
     IDEX (0xf7, E, gp3)
     IDEXW(0xfe, E, gp4, 1)
     IDEX (0xff, E, gp5)
@@ -309,7 +313,7 @@ again:
   default: exec_inv(s);
   }
 }
-
+void query_intr(DecodeExecState *s) ;
 vaddr_t isa_exec_once() {
   DecodeExecState s;
   s.is_jmp = 0;
@@ -319,5 +323,6 @@ vaddr_t isa_exec_once() {
   fetch_decode_exec(&s);
   update_pc(&s);
 
+  query_intr(&s);
   return s.seq_pc;
 }

@@ -20,31 +20,18 @@ static inline def_EHelper(lidt) {
 
 
 static inline def_EHelper(mov_r2cr) {
-  TODO();
-  /*switch (id_dest->reg)
-  {
-  case 0:cpu.cr0 = id_src1->val;break;
-  case 3:cpu.cr3 = id_src1->val;break;
-  default:panic("invalid cr\n");
-    break;
-  }
-  */
-
-  print_asm("movl %%%s,%%cr%d", reg_name(id_src1->reg, 4), id_dest->reg);
+  //printf("cr0 %x  %x\n",*ddest, *dsrc1);
+ *ddest = *dsrc1;
+  
+//printf("cr0 %x cr3 %x\n",cpu.cr0,cpu.cr3);
+  //print_asm("movl %%%s,%%cr%d", reg_name(id_src1->reg, 4), id_dest->reg);
 }
 
 static inline def_EHelper(mov_cr2r) {
-  TODO();
   
-/*switch (id_dest->reg)
-  {
-  case 0:operand_write(id_dest,&cpu.cr0);break;
-  case 3:operand_write(id_dest,&cpu.cr3);break;
-  default:panic("invalid cr\n");
-    break;
-  }
-  */
-  print_asm("movl %%cr%d,%%%s", id_src1->reg, reg_name(id_dest->reg, 4));
+   *dsrc1 = *ddest;
+  //printf("cr0 %x cr3 %x\n",cpu.cr0,cpu.cr3);
+  //print_asm("movl %%cr%d,%%%s", id_src1->reg, reg_name(id_dest->reg, 4));
 
 #ifndef __DIFF_REF_NEMU__
   difftest_skip_ref();
